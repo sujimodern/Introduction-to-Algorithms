@@ -14,7 +14,7 @@ struct list {
 };
 
 node *node_new(int key) {
-  node *n = malloc(sizeof(*n));
+  node *n = malloc(sizeof *n);
   if (n) {
     *n = (node){
         .key = key,
@@ -30,7 +30,7 @@ void node_delete(node *n) {
 }
 
 list *list_new() {
-  list *l = malloc(sizeof(*l));
+  list *l = malloc(sizeof *l);
   node *nil = node_new(0);
   nil->next = nil;
   if (l) {
@@ -62,12 +62,14 @@ void list_insert(list *l, node *x) {
 
 void list_delete_(list *l, node *x) {}
 
-// FIXME
 node *list_search(list *l, int key) {
   node *x = l->nil->next;
-  while (x != l->nil && x->key != key) {
+  int orig = l->nil->key;
+  l->nil->key = !key; // assign definitely different value from the key.
+  while (x->key != key) {
     x = x->next;
   }
+  l->nil->key = orig;
   return x;
 }
 
